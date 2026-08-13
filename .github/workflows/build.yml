@@ -43,7 +43,9 @@ jobs:
           # ⚠️ 第三个参数是“本地保存文件名”，必须与 build.gradle 的 flatDir 坐标（blank:xxx）完全一致；
           fetch "tartaricacid/TouhouLittleMaid" "1.20.1" "touhoulittlemaid-1.5.3-forge-mc1.20.1.jar"
           # 无尽贪婪：重生 Re-Avaritia
-          fetch "Nova-Committee/Avaritia" "1.20.1" "Re-Avaritia-forge-1.20.1-1.4.0-release.jar"
+          # ⚠️ 官方仓库是 Nova-Committee/Re-Avaritia（重生分支，见其 gradle.properties 的 issue_tracker）；
+          #    不是原版无尽贪婪的 Nova-Committee/Avaritia。
+          fetch "Nova-Committee/Re-Avaritia" "1.20.1" "Re-Avaritia-forge-1.20.1-1.4.0-release.jar"
 
       - name: Build with Gradle
         run: ./gradlew build
