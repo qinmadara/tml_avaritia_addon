@@ -75,7 +75,8 @@ body:
     id: expected
     attributes:
       label: bug描述
-      placeholder: 简单对bug进行描述
+      placeholder: |
+        对bug进行简单描述
     validations:
       required: true
   - type: textarea
