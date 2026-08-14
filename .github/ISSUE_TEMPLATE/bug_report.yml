@@ -24,7 +24,7 @@ body:
     validations:
       required: true
   - type: input
-    id: tlm-version
+    id: loader-version
     attributes:
       label: MOD加载器版本
       placeholder: 例如 47.1.106
@@ -72,7 +72,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: expected
+    id: bug-description
     attributes:
       label: bug描述
       placeholder: |
