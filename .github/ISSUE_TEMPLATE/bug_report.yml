@@ -1,0 +1,91 @@
+name: Bug Report 问题反馈
+description: 反馈模组 bug（请尽量填全信息，尤其是日志文件）
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量填全以下信息，**尤其是日志文件**——它能直接定位问题。
+  - type: input
+    id: mc-version
+    attributes:
+      label: Minecraft 版本
+      placeholder: 例如 1.20.1
+    validations:
+      required: true
+  - type: dropdown
+    id: loader
+    attributes:
+      label: MOD加载器
+      options:
+        - Forge
+        - NeoForge
+    validations:
+      required: true
+  - type: input
+    id: tlm-version
+    attributes:
+      label: MOD加载器版本
+      placeholder: 例如 47.1.106
+    validations:
+      required: true
+  - type: input
+    id: tlm-version
+    attributes:
+      label: 车万女仆 TLM 版本
+      placeholder: 例如 1.5.3
+    validations:
+      required: true
+  - type: input
+    id: avaritia-version
+    attributes:
+      label: 无尽贪婪：重生 Re-Avaritia 版本
+      placeholder: 例如 1.4.0
+    validations:
+      required: true
+  - type: input
+    id: mod-version
+    attributes:
+      label: 本模组版本
+      placeholder: 例如 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: 运行环境
+      options:
+        - 单人游戏
+        - 联机（服务端）
+        - 联机（客户端）
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志文件（崩溃报告 / logs/latest.log）
+      description: |
+        请直接**拖拽上传**以下文件（位于 .minecraft/logs/ 和 .minecraft/crash-reports/ 下）：
+        - logs/latest.log
+        - crash-reports/crash-*.txt（如有崩溃）
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: bug描述
+      placeholder: 简单对bug进行描述
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 怎么做才会触发这个 bug？
+      placeholder: |
+        1. 给女仆拿无尽xxx / 穿无尽xxx
+        2. ...
+        3. 发生 xxx
+    validations:
+      required: true
