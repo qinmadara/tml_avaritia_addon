@@ -1,9 +1,9 @@
 [English](README_EN.md) | [简体中文](README.md)
-# Touhou Little Maid × Avaritia: Reborn (Addon)
+# TML_Avaritia_addon
 
 ![icon](src/main/resources/icon.png)
 
-> A small addon that lets Touhou Little Maid maids actually wield the weapons and armor of Avaritia: Reborn.
+> A small addon that lets Touhou Little Maid maids actually wield the weapons and armor of Re:Avaritia.
 
 | Item | Value |
 |---|---|
@@ -46,11 +46,11 @@
 | Forge | 47.1.3+ |
 | Java | 17 |
 | Touhou Little Maid | 1.5.3 (Forge 1.20.1) |
-| Avaritia: Reborn | 1.4.0+ (Forge 1.20.1) |
+| Re:Avaritia | 1.4.0+ (Forge 1.20.1) |
 
 > Both the client and the server must have this mod and both prerequisites installed. **If any prerequisite is missing, Forge will raise an error during startup and refuse to load this mod.**
 
-> **Regarding Avaritia compatibility**: This mod is **adapted specifically for the "Avaritia: Reborn" branch only**, and does not represent compatibility with other Avaritia branches.
+> **Regarding Avaritia compatibility**: This mod is **adapted specifically for the "Re:Avaritia" branch only**, and does not represent compatibility with other Avaritia branches.
 
 ---
 
@@ -67,7 +67,7 @@
 ## Installation
 
 1. Install Minecraft 1.20.1 + Forge 47.1.3+ (NeoForge 1.20.1 also works; see "Loader & Version Compatibility")
-2. Install the prerequisites: Touhou Little Maid 1.5.3, Avaritia: Reborn 1.4.0+
+2. Install the prerequisites: Touhou Little Maid 1.5.3, Re:Avaritia 1.4.0+
 3. Place this mod's jar into the `mods/` folder
 4. Launch the game
 
@@ -124,10 +124,10 @@ This mod depends on and references the following open-source projects:
 | Project | License | Copyright |
 |---|---|---|
 | [Touhou Little Maid](https://github.com/tartaricacid/TouhouLittleMaid) | Code: MIT / Assets: CC BY-NC-SA 4.0 | © tartaric_acid |
-| [Avaritia: Reborn](https://github.com/Nova-Committee/Avaritia) | Code: MIT / Assets: CC BY-NC-SA 4.0 | © cnlimiter (Nova Committee) |
+| [Re:Avaritia](https://github.com/Nova-Committee/Re-Avaritia) | Code: MIT / Assets: CC BY-NC-SA 4.0 | © cnlimiter (Nova Committee) |
 
 - This mod only references the public APIs of the above mods at compile/runtime time and **does not bundle any of their code or assets**.
-- This mod is an **unofficial addon** and is not affiliated with the authors of Touhou Little Maid or Avaritia: Reborn.
+- This mod is an **unofficial addon** and is not affiliated with the authors of Touhou Little Maid or Re:Avaritia.
 
 ---
 
@@ -136,9 +136,3 @@ This mod depends on and references the following open-source projects:
 - This mod was developed with **extensive AI assistance**, including: code generation and refactoring, bug triage, code review, and documentation (including this README).
 - All AI-generated code was **reviewed, revised, and tested in-game by a human** before being integrated; the final code is released under the MIT License.
 - AI is used to improve development efficiency; code quality, functional correctness, and license compliance are the responsibility of the project author.
-
----
-
-## Disclaimer
-
-This mod is not affiliated with Mojang, the Touhou Project, or the official teams of the mods mentioned above. Mojang's official mapping names are governed by the license in [Mojang.md](https://github.com/NeoForged/NeoForm/blob/main/Mojang.md).

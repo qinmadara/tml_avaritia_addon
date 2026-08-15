@@ -1,10 +1,9 @@
 [English](README_EN.md) | [简体中文](README.md)
-# 车万女仆：无尽贪婪（Touhou Little Maid × Avaritia: Reborn 联动附属模组）
+# 车万女仆：无尽贪婪
 
 ![icon](src/main/resources/icon.png)
 
-> 一个让车万女仆（Touhou Little Maid）能够真正使用无尽贪婪：重生（Avaritia: Reborn）武器的联动附属模组。
-> A small addon that lets Touhou Little Maid maids actually wield the weapons and armor of Avaritia: Reborn.
+> 一个让车万女仆（Touhou Little Maid）能够真正使用无尽贪婪：重生（Re:Avaritia）武器的联动附属模组。
 
 | 项 | 值 |
 |---|---|
@@ -47,7 +46,7 @@
 | Forge | 47.1.3+ |
 | Java | 17 |
 | Touhou Little Maid 车万女仆 | 1.5.3（Forge 1.20.1） |
-| Avaritia: Reborn 无尽贪婪：重生 | 1.4.0+（Forge 1.20.1） |
+| Re:Avaritia 无尽贪婪：重生 | 1.4.0+（Forge 1.20.1） |
 
 > 客户端与服务端均需安装本模组及两个前置。**缺少任一前置时，Forge 会在启动阶段直接报错并拒绝加载本模组。**
 
@@ -68,7 +67,7 @@
 ## 安装 Installation
 
 1. 安装 Minecraft 1.20.1 + Forge 47.1.3+（使用 NeoForge 1.20.1 亦可，见「加载器与版本兼容性」）
-2. 安装前置：Touhou Little Maid 1.5.3、Avaritia: Reborn 1.4.0+
+2. 安装前置：Touhou Little Maid 1.5.3、Re:Avaritia 1.4.0+
 3. 将本模组 jar 放入 `mods/` 文件夹
 4. 启动游戏
 
@@ -125,10 +124,10 @@
 | 项目 | 许可 | 版权 |
 |---|---|---|
 | [Touhou Little Maid](https://github.com/tartaricacid/TouhouLittleMaid) | 代码 MIT / 资源 CC BY-NC-SA 4.0 | © tartaric_acid |
-| [Avaritia: Reborn](https://github.com/Nova-Committee/Avaritia) | 代码 MIT / 资源 CC BY-NC-SA 4.0 | © cnlimiter（Nova Committee） |
+| [Re:Avaritia](https://github.com/Nova-Committee/Re-Avaritia) | 代码 MIT / 资源 CC BY-NC-SA 4.0 | © cnlimiter（Nova Committee） |
 
 - 本模组仅编译期/运行期引用上述模组的公共 API，**未打包其任何代码或资源**。
-- 本模组为**非官方附属模组**，与 Touhou Little Maid、Avaritia: Reborn 的作者无任何关联。
+- 本模组为**非官方附属模组**，与 Touhou Little Maid、Re:Avaritia 的作者无任何关联。
 
 ---
 
@@ -137,9 +136,3 @@
 - 本模组在开发过程中**大幅使用 AI 辅助**，包括：代码生成与重构、Bug 排查、代码审查、文档（含本 README）编写等。
 - 所有 AI 产出的代码均经过**人工审阅、修改与游戏内实测**后整合，最终代码以 MIT 许可发布。
 - 使用 AI 的目的在于提升开发效率；代码质量、功能正确性与许可合规均由项目作者负责。
-
----
-
-## 免责声明 Disclaimer
-
-本模组与 Mojang、Touhou Project 及上述模组官方均无关联。Mojang 官方映射名受 [Mojang.md](https://github.com/NeoForged/NeoForm/blob/main/Mojang.md) 许可约束。
