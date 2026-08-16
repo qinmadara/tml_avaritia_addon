@@ -7,7 +7,7 @@
 
 | Item | Value |
 |---|---|
-| Current Version | 0.1.0 |
+| Current Version | 0.1.4 |
 | Loader | Forge 1.20.1 (47.1.3+); NeoForge 1.20.1 |
 | Java | 17 |
 | License | MIT |
@@ -17,13 +17,13 @@
 ## Features
 
 ### Melee
-- **Infinity Sword**: Trigger Infinity Sword effects on melee (instant kill + AOE); damage is routed through the `MaidHurtTarget.Pre` event with `setCanceled(true)`.
-- **8-block melee range**: A Mixin extends the maid's melee range so sword-type weapons work at greater distance.
-
+- **Infinity Sword**: Triggers Infinity Sword effects (instant kill + AOE). TLM's built-in attack task does not trigger this addon's effects.
 ### Ranged
-- **Infinity Bow**: Fires **arrow barrages**; with **Tracking Mode** enabled, fires **homing arrows**.
-- **Infinity Crossbow**: Fires **arrow barrages**; with **Multi-Shot Mode** enabled, fires a **5-arrow spread** in a single shot.
-- **Infinity Trident**: Can properly trigger **lightning strikes**.
+- **Infinity Bow**: Fires without consuming backpack arrows; fires **Heaven Arrows** by default, or **Tracer Arrows** with Tracking Mode enabled.
+- **Infinity Crossbow**: Fires a single **Heaven Arrow** by default, or a **5-arrow spread** with Multi-Shot Mode enabled.
+- **Infinity Trident**: Throws the Infinity Trident and triggers **lightning strikes**.
+
+> Each Infinity weapon task only accepts its corresponding Infinity weapon; with normal bows/crossbows/tridents these tasks will not attack. TLM's built-in bow/crossbow/trident tasks do not trigger this addon's effects.
 
 ### Weapon Mode Switch GUI
 - A dedicated "Weapon Attack Mode Switch" task settings GUI for the bow/crossbow, used to toggle Tracking / Multi-Shot modes.
@@ -79,9 +79,8 @@ The config file is located at `config/tml_avaritia_addon-common.toml`. Main opti
 
 | Key | Default | Description |
 |---|---|---|
-| `maid_sword_aoe` | `true` | Whether Infinity Sword attacks deal area damage (maid version of the sweep attack) |
-| `force_kill_mode` | `false` | Force the maid's Infinity Sword into kill/execute mode (off by default) |
-| `maid_melee_reach` | `8.0` | Melee reach of the maid when wielding Infinity weapons (blocks, 3–16) |
+| `maid_sword_aoe` | `true` | Whether each Infinity Sword attack also triggers Re-Avaritia's right-click AOE (on by default) |
+| `force_kill_mode` | `false` | Force the maid's Infinity Sword AOE into kill mode (off by default; AOE ignores friend/foe when enabled) |
 | `infinity_armor_night_vision` | `true` | Infinity Armor helmet: night vision |
 | `boot_speed_base` | `0.1` | Infinity boots speed (≈ 2× the maid's base movement speed, same multiplier as a player wearing the boots) |
 | `boot_speed_swimming_multiplier` | `1.2` | Boots swimming multiplier |
@@ -96,12 +95,12 @@ The config file is located at `config/tml_avaritia_addon-common.toml`. Main opti
 Requirements: JDK 17
 
 ```bash
-# 1. Put the jars of the two prerequisite mods into libs/ (file names must match the flatDir coordinates in build.gradle):
+# 1. Put the jars of the two prerequisite mods into libs/ (file names must match the dependency coordinates in build.gradle):
 #    - touhoulittlemaid-1.5.3-forge-mc1.20.1.jar
 #    - Re-Avaritia-forge-1.20.1-1.4.0-release.jar
 #    (libs/ is gitignored and not committed; GitHub Actions downloads them automatically from the upstream Releases)
 
-./gradlew build        # Build output in build/libs/
+./gradlew build        # Build output: build/libs/TML_Avaritia_addon-<version>-MC1.20.1+forge.jar
 ./gradlew runClient    # Launch the dev client
 ```
 

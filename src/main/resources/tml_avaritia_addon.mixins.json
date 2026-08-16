@@ -4,7 +4,7 @@
   "package": "com.qinmadara.tml_avaritia_addon.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "tml_avaritia_addon.refmap.json",
-  "mixins": ["MixinEntityMaid", "MixinInfinityBowItem", "MixinTaskBowAttack", "MixinTaskCrossBowAttack"],
+  "mixins": ["MixinInfinityBowItem"],
   "client": [],
   "injectors": { "defaultRequire": 1 }
 }

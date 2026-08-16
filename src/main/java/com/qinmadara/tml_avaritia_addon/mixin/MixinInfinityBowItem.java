@@ -1,6 +1,7 @@
 package com.qinmadara.tml_avaritia_addon.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.qinmadara.tml_avaritia_addon.task.TaskAvaritiaBow;
 import com.qinmadara.tml_avaritia_addon.util.AvaritiaWeaponUtil;
 import committee.nova.mods.avaritia.common.entity.arrow.HeavenArrowEntity;
 import committee.nova.mods.avaritia.common.entity.arrow.TraceArrowEntity;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * 无尽弓远程特效。
  * ProjectileUtil.getMobArrow -> ((BowItem)item).customArrow(arrow) -> addFreshEntity。
  * @Mixin 目标必须为 BowItem（Mixin 无法对未在目标类声明的方法生成 refmap/混淆映射），
- * 方法体内用 instanceof InfinityBowItem 门控，确保只有女仆持无尽弓时才替换箭矢。
+ * 方法体内同时检查“无尽之弓攻击”任务与主手 InfinityBowItem，确保只有本模组弓任务才替换箭矢。
  */
 @Mixin(BowItem.class)
 public abstract class MixinInfinityBowItem {
@@ -28,6 +29,10 @@ public abstract class MixinInfinityBowItem {
     private void maidAvaritia$replaceArrow(AbstractArrow arrow, CallbackInfoReturnable<AbstractArrow> cir) {
         // 仅女仆射出的箭生效；其他生物（骷髅等）射弓仍走原逻辑（普通箭）
         if (!(arrow.getOwner() instanceof EntityMaid maid)) {
+            return;
+        }
+        // 特效只属于“无尽之弓攻击”任务；TLM 自带弓任务即使手持无尽之弓也使用普通箭
+        if (!(maid.getTask() instanceof TaskAvaritiaBow)) {
             return;
         }
         ItemStack stack = maid.getMainHandItem();

@@ -1,5 +1,9 @@
 package com.qinmadara.tml_avaritia_addon.task;
 
+import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidAttackTridentTask;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidRangedWalkToTarget;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidTridentTargetTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskTridentAttack;
 import com.google.common.collect.Lists;
@@ -12,31 +16,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
+import net.minecraft.world.entity.ai.behavior.StartAttacking;
+import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.MenuProvider;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
  * 无尽三叉戟专属远程任务。
- * 直接继承 TLM 自带的 TaskTridentAttack（远程索敌/走位/蓄力/骑乘行为全部复用），
- * 仅覆盖 UID/图标/武器判定/条件描述/射击实现。
  *
- * 关键设计：
- * - 无尽三叉戟玩家版特效入口是 InfinityTridentItem#releaseUsing（内部 instanceof Player 门控
- *   + private shootTrident）；女仆 AI（MaidTridentTargetTask）走 startUsingItem →
- *   stopUsingItem + performRangedAttack，根本不经过 item.releaseUsing → 无需 Mixin，
- *   任务层覆写 performRangedAttack 直接复刻特效即可。
- * - 投掷实体用 InfinityThrownTrident（命中 Float.MAX_VALUE 伤害 + 落雷）；
- *   setLoyaltyLevel(0)：canCompleteReturn 要求 owner instanceof Player，女仆投出的无尽三叉戟
- *   永不回归；loyalty>0 会无物理无限环绕女仆（实体堆积），loyalty=0 则命中后插地不消失
- * - 女仆主手三叉戟保留（不似玩家从背包移除），可重复投掷；不调用 hurtAndBreak——
- *   无尽三叉戟为 IUndamageable 无限耐久武器，无需消耗耐久（且避免任何耐久损耗风险）。
- * - 瞄准逻辑对齐 TLM 原版 TaskTridentAttack：按距离调速度（1.6~3.2）/不准确度 + 无重力，
- *   保证女仆百发百中。
+ * 索敌 / 走位 / 追击 / 蓄力投掷状态机完全复用 TLM TaskTridentAttack 的原始行为，
+ * 只是把索敌条件收窄为“主手必须是无尽三叉戟”。普通三叉戟在本任务下不会攻击。
  */
 public class TaskAvaritiaTrident extends TaskTridentAttack {
 
@@ -58,6 +53,31 @@ public class TaskAvaritiaTrident extends TaskTridentAttack {
     }
 
     @Override
+    public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
+        BehaviorControl<? super EntityMaid> start = StartAttacking.create(
+                entityMaid -> this.isWeapon(entityMaid, entityMaid.getMainHandItem()),
+                IRangedAttackTask::findFirstValidAttackTarget);
+        BehaviorControl<? super EntityMaid> stop = StopAttackingIfTargetInvalid.create(
+                target -> !this.isWeapon(maid, maid.getMainHandItem()) || farAway(maid, target));
+        BehaviorControl<? super EntityMaid> move = MaidRangedWalkToTarget.create(0.6F);
+        BehaviorControl<? super EntityMaid> strafe = new MaidAttackTridentTask();
+        BehaviorControl<? super EntityMaid> shoot = new MaidTridentTargetTask();
+        return Lists.newArrayList(
+                Pair.of(5, start), Pair.of(5, stop), Pair.of(5, move), Pair.of(5, strafe), Pair.of(5, shoot));
+    }
+
+    @Override
+    public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
+        BehaviorControl<? super EntityMaid> start = StartAttacking.create(
+                entityMaid -> this.isWeapon(entityMaid, entityMaid.getMainHandItem()),
+                IRangedAttackTask::findFirstValidAttackTarget);
+        BehaviorControl<? super EntityMaid> stop = StopAttackingIfTargetInvalid.create(
+                target -> !this.isWeapon(maid, maid.getMainHandItem()) || farAway(maid, target));
+        BehaviorControl<? super EntityMaid> shoot = new MaidTridentTargetTask();
+        return Lists.newArrayList(Pair.of(5, start), Pair.of(5, stop), Pair.of(5, shoot));
+    }
+
+    @Override
     public List<Pair<String, Predicate<EntityMaid>>> getConditionDescription(EntityMaid maid) {
         return Lists.newArrayList(Pair.of(
                 "task.tml_avaritia_addon.avaritia_trident_attack.condition",
@@ -72,31 +92,32 @@ public class TaskAvaritiaTrident extends TaskTridentAttack {
     @Override
     public void performRangedAttack(EntityMaid maid, LivingEntity target, float distanceFactor) {
         ItemStack tridentStack = maid.getMainHandItem();
-        if (!(tridentStack.getItem() instanceof InfinityTridentItem)) {
-            super.performRangedAttack(maid, target, distanceFactor);
-            return;
-        }
-        if (maid.level().isClientSide) {
+        if (!(tridentStack.getItem() instanceof InfinityTridentItem) || maid.level().isClientSide) {
+            // 普通三叉戟不在本任务生效范围内
             return;
         }
 
-        // 无尽三叉戟：命中 Float.MAX_VALUE 伤害 + 落雷；loyalty=0（女仆无法回归，避免无物理环绕堆积）
         InfinityThrownTrident thrownTrident = new InfinityThrownTrident(maid.level(), maid, tridentStack);
         thrownTrident.setLoyaltyLevel(0);
         thrownTrident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 
-        // 瞄准目标（对齐 TLM 原版 TaskTridentAttack：按距离调速度/不准确度 + 无重力保证命中）
+        // 直接朝目标坐标投掷，对齐 TLM 原版 TaskTridentAttack 的瞄准方式
         double x = target.getX() - maid.getX();
-        double y = target.getEyeY() - maid.getEyeY();
+        double y = target.getY() - maid.getY();
         double z = target.getZ() - maid.getZ();
         float distance = maid.distanceTo(target);
         float velocity = Mth.clamp(distance / 10f, 1.6f, 3.2f);
         float inaccuracy = 1 - Mth.clamp(distance / 100f, 0, 0.9f);
+
         thrownTrident.setNoGravity(true);
         thrownTrident.shoot(x, y, z, velocity, inaccuracy);
 
         maid.level().addFreshEntity(thrownTrident);
         maid.level().playSound(null, maid.getX(), maid.getY(), maid.getZ(),
                 SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+
+    private boolean farAway(EntityMaid maid, LivingEntity target) {
+        return !target.isAlive() || maid.distanceTo(target) > this.searchRadius(maid);
     }
 }

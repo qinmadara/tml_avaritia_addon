@@ -1,29 +1,29 @@
 # eclipse
-bin
+bin/
 *.launch
-.settings
-.metadata
+.settings/
+.metadata/
 .classpath
 .project
 
 # idea
-out
+out/
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/
+.vscode/
 
 # gradle
-build
-.gradle
+build/
+.gradle/
 
-# other
-eclipse
-run
-runs
-run-data
+# Minecraft run directories
+run/
+runs/
+run-data/
+logs/
 
 # local mod jars (not committed; CI downloads them into libs/ before building)
-libs
-
-repo
+libs/
+repo/

@@ -68,8 +68,11 @@ public class MaidInfinityArmorHandler {
         if (hasBoots) {
             handleBoots(maid);
         } else {
-            // 脱下无尽靴子（或穿普通靴子/无靴）：恢复默认台阶高度 + 移除移速修饰符（普通靴子绝不触发加速）
-            maid.setMaxUpStep(0.6F);
+            // 脱下无尽靴子（或穿普通靴子/无靴）：仅在台阶高度被改过时恢复默认值，
+            // 避免每 tick 写入 step height 干扰 TLM 自身移动/寻路逻辑；移速修饰符同样只在存在时移除。
+            if (maid.maxUpStep() == 1.0625F) {
+                maid.setMaxUpStep(0.6F);
+            }
             removeBootsSpeed(maid);
         }
     }
@@ -79,8 +82,11 @@ public class MaidInfinityArmorHandler {
         maid.setAirSupply(300);
         if (Config.infinityArmorNightVision) {
             MobEffectInstance nv = maid.getEffect(MobEffects.NIGHT_VISION);
-            if (nv == null || nv.getDuration() < 300) {
-                // 每 tick 补发 300 时长夜视；addEffect 仅在现有时长更短时替换，等效于持续刷新到 300
+            if (nv == null) {
+                // 首次添加夜视；duration 字段为 private，不能像 Re-Avaritia 那样直接写 nv.duration，
+                // 因此只在剩余时长较低时补发一次，避免每 tick 分配/替换效果实例
+                maid.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, false, false));
+            } else if (nv.getDuration() <= 240) {
                 maid.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, false, false));
             }
         }
@@ -105,17 +111,20 @@ public class MaidInfinityArmorHandler {
 
     /** 靴子：台阶高度 + 移动速度（MOVEMENT_SPEED 属性修饰符，对齐玩家同装备的 bootSpeedBase 数值） */
     private static void handleBoots(EntityMaid maid) {
-        // 台阶高度：可直接走上 1 格（17 像素）
-        maid.setMaxUpStep(1.0625F);
+        // 台阶高度：可直接走上 1 格（17 像素）；仅在需要时写入，避免每 tick 干扰 TLM 移动/寻路
+        if (maid.maxUpStep() < 1.0625F) {
+            maid.setMaxUpStep(1.0625F);
+        }
         AttributeInstance speedAttr = maid.getAttribute(Attributes.MOVEMENT_SPEED);
         if (speedAttr == null) {
             return;
         }
-        // 移动速度：改用 MOVEMENT_SPEED 属性修饰符（MULTIPLY_BASE），而不是 moveRelative 直接推速度。
+        // 移动速度：继续使用 MOVEMENT_SPEED 属性修饰符（MULTIPLY_BASE），而不是 Re-Avaritia 的 moveRelative 直接推速度。
         // 女仆陆地/游泳移动都由 MaidMoveControl 用 getAttributeValue(MOVEMENT_SPEED) 驱动（陆地 setSpeed、游泳 speedLerp×3），
         // 属性加成会自然叠加，且方向/启停完全由大脑与 MoveControl 控制——坐下、被传送清路后 brain 不设 MOVE_TO 就不会移动，
         // 彻底避免原 moveRelative 的“速度自持漂移/坐下仍移动/传送后仍朝原方向走”问题。
-        // 数值：陆地 = bootSpeedBase 换算 +100%（2× 基础，与玩家穿靴对齐）；游泳 × 游泳倍率；冲刺再叠冲刺倍率。
+        // 数值尽量对齐 Re-Avaritia：陆地 = bootSpeedBase / 0.1（默认 +100%）；游泳乘 swimming 倍率；
+        // 冲刺沿袭原版“额外固定速度增量”的相对语义，按 REFERENCE_WALK_SPEED 折算为属性比例。
         double baseRatio = Config.bootSpeedBase / REFERENCE_WALK_SPEED;
         double amount = baseRatio * (maid.isInWater() ? Config.bootSpeedSwimmingMultiplier : 1.0D);
         if (maid.isSprinting()) {
@@ -130,10 +139,10 @@ public class MaidInfinityArmorHandler {
         }
     }
 
-    /** 脱下无尽靴子：移除移速修饰符（普通靴子/无靴子时也兜底移除，确保绝不误触发加速） */
+    /** 脱下无尽靴子：仅在修饰符仍存在时移除（普通靴子/无靴子时也兜底检查，确保绝不误触发加速） */
     private static void removeBootsSpeed(EntityMaid maid) {
         AttributeInstance speedAttr = maid.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speedAttr != null) {
+        if (speedAttr != null && speedAttr.getModifier(BOOTS_SPEED_MODIFIER_UUID) != null) {
             speedAttr.removeModifier(BOOTS_SPEED_MODIFIER_UUID);
         }
     }

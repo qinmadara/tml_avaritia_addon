@@ -1,12 +1,8 @@
 package com.qinmadara.tml_avaritia_addon.util;
 
 import com.qinmadara.tml_avaritia_addon.Config;
-import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityAxeItem;
 import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityBowItem;
 import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityCrossBowItem;
-import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityHoeItem;
-import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityPickaxeItem;
-import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityShovelItem;
 import committee.nova.mods.avaritia.common.item.tools.infinity.InfinitySwordItem;
 import committee.nova.mods.avaritia.common.item.tools.infinity.InfinityTridentItem;
 import committee.nova.mods.avaritia.init.registry.ModItems;
@@ -23,21 +19,17 @@ public final class AvaritiaWeaponUtil {
     private AvaritiaWeaponUtil() {
     }
 
-    /** 实体主手是否持有无尽近战武器（剑/斧/镐/铲/锄） */
+    /** 实体主手是否持有无尽之剑（当前近战任务只接受无尽之剑） */
     public static boolean isHoldingAvaritiaMelee(LivingEntity entity) {
         return isAvaritiaMelee(entity.getMainHandItem());
     }
 
-    /** 是否为无尽近战武器 */
+    /** 是否为无尽之剑 */
     public static boolean isAvaritiaMelee(ItemStack stack) {
-        return stack.getItem() instanceof InfinitySwordItem
-                || stack.getItem() instanceof InfinityAxeItem
-                || stack.getItem() instanceof InfinityPickaxeItem
-                || stack.getItem() instanceof InfinityShovelItem
-                || stack.getItem() instanceof InfinityHoeItem;
+        return stack.getItem() instanceof InfinitySwordItem;
     }
 
-    /** 是否为无尽武器（近战 + 远程） */
+    /** 是否为无尽武器（无尽之剑 + 远程） */
     public static boolean isAvaritiaWeapon(ItemStack stack) {
         return isAvaritiaMelee(stack)
                 || stack.getItem() instanceof InfinityBowItem
@@ -67,8 +59,8 @@ public final class AvaritiaWeaponUtil {
 
     /** 该模式是否可被女仆模式开关切换（按主手武器白名单校验，防伪造包） */
     public static boolean isModeSwitchable(ItemStack stack, String mode) {
-        return stack.getItem() instanceof InfinityBowItem && "infinity_bow_tracer".equals(mode)
-                || stack.getItem() instanceof InfinityCrossBowItem && "infinity_crossbow_multi".equals(mode);
+        return (stack.getItem() instanceof InfinityBowItem && "infinity_bow_tracer".equals(mode))
+                || (stack.getItem() instanceof InfinityCrossBowItem && "infinity_crossbow_multi".equals(mode));
     }
 
     /** 无尽之剑的默认物品栈（用于任务图标显示） */

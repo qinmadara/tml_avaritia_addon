@@ -16,15 +16,12 @@ public class Config
             .comment("Maid's infinity sword attack also triggers the right-click AOE effect (maid cannot right-click, so merged into each attack; default on)")
             .define("maid_sword_aoe", true);
 
-    // 强制女仆无尽剑进入斩杀模式（默认关：女仆使用普通/默认模式，避免杀戮模式“不分敌我”误伤主人/盟友）
+    // 强制女仆无尽剑进入 Re-Avaritia 的 AOE 杀戮模式（infinity_sword_kill）。
+    // 默认关：AOE 只命中敌对生物且排除 forge:neutral_creatures，避免误伤主人/盟友/中立生物；
+    // 开启后与原版 kill mode 一致，AOE 不再区分敌我（仅排除女仆自身，并沿用物品/弹射物过滤）。
     private static final ForgeConfigSpec.BooleanValue FORCE_KILL_MODE = BUILDER
-            .comment("Force maid's infinity sword into kill mode (default off: maid uses normal mode to avoid friendly fire; kill mode ignores friend/foe)")
+            .comment("Force maid's infinity sword AOE into kill mode (default off: AOE hits only hostile mobs; kill mode ignores friend/foe like Re-Avaritia)")
             .define("force_kill_mode", false);
-
-    // 女仆手持无尽武器时的攻击距离（格）
-    private static final ForgeConfigSpec.DoubleValue MAID_MELEE_REACH = BUILDER
-            .comment("Melee reach (blocks) for maid holding infinity weapons")
-            .defineInRange("maid_melee_reach", 8.0D, 3.0D, 16.0D);
 
     // ===== 无尽护甲·女仆被动适配 =====
     // 对标 Re-Avaritia ModConfig 的护甲相关项（同名同值同范围）；这些项只对女仆生效，
@@ -60,7 +57,6 @@ public class Config
 
     public static boolean maidSwordAoe;
     public static boolean forceKillMode;
-    public static double maidMeleeReach;
     public static boolean infinityArmorNightVision;
     public static double bootSpeedBase;
     public static double bootSpeedFlyingMultiplier;
@@ -71,11 +67,14 @@ public class Config
     public static double bootSpeedSprintingMultiplier;
 
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent event)
+    public static void onLoad(final ModConfigEvent event)
     {
+        // 只处理本模组自己的配置，避免其他配置加载/重载事件误触发
+        if (event.getConfig().getSpec() != SPEC) {
+            return;
+        }
         maidSwordAoe = MAID_SWORD_AOE.get();
         forceKillMode = FORCE_KILL_MODE.get();
-        maidMeleeReach = MAID_MELEE_REACH.get();
         infinityArmorNightVision = INFINITY_ARMOR_NIGHT_VISION.get();
         bootSpeedBase = BOOT_SPEED_BASE.get();
         bootSpeedFlyingMultiplier = BOOT_SPEED_FLYING_MULTIPLIER.get();

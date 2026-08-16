@@ -7,7 +7,7 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | 0.1.0 |
+| 当前版本 | 0.1.4 |
 | 加载器 | Forge 1.20.1（47.1.3+）；NeoForge 1.20.1 |
 | Java | 17 |
 | 许可 | MIT |
@@ -17,13 +17,13 @@
 ## 功能特性 Features
 
 ### 近战 Melee
-- **无尽之剑 Infinity Sword**：女仆近战触发无尽剑特效（秒杀 + AOE），伤害结算走 `MaidHurtTarget.Pre` 事件并 `setCanceled(true)`。
-- **8 格近战范围**：通过 Mixin 扩大女仆近战判定，让剑类武器在更远距离生效。
-
+- **无尽之剑 Infinity Sword**：触发无尽剑特效（秒杀 + AOE）；TLM 自带攻击任务不触发本模组特效。
 ### 远程 Ranged
-- **无尽之弓 Infinity Bow**：射出**箭雨**；开启**追踪模式**后射出**追踪箭**。
-- **无尽之弩 Infinity Crossbow**：射出**箭雨**；开启**多重射击模式**后一次发射 **5 发扇形箭**。
-- **无尽三叉戟 Infinity Trident**：可正常触发**落雷**。
+- **无尽之弓 Infinity Bow**：无需背包箭矢即可射击；默认射**天界箭**，开启**追踪模式**后射**追踪箭**。
+- **无尽之弩 Infinity Crossbow**：默认单发**天界箭**，开启**多重射击模式**后一次发射 **5 发扇形箭**。
+- **无尽三叉戟 Infinity Trident**：投掷无尽三叉戟并触发**落雷**。
+
+> 各无尽武器任务只接受对应的无尽系列武器；手持普通弓/弩/三叉戟时这些任务不会攻击。TLM 自带的弓/弩/三叉戟任务也不会触发本模组特效。
 
 ### 武器模式切换 GUI
 - 弓/弩专属「武器攻击模式切换」任务设置界面，用于切换追踪/多重射击模式。
@@ -79,9 +79,8 @@
 
 | 键 Key | 默认 Default | 说明 Description |
 |---|---|---|
-| `maid_sword_aoe` | `true` | 无尽剑攻击是否附带范围伤害（女仆版横扫） |
-| `force_kill_mode` | `false` | 强制女仆无尽剑进入斩杀模式（默认关） |
-| `maid_melee_reach` | `8.0` | 女仆手持无尽武器时的近战距离（格，3–16） |
+| `maid_sword_aoe` | `true` | 无尽剑每次攻击是否附带 Re-Avaritia 右键 AOE（默认开） |
+| `force_kill_mode` | `false` | 强制女仆无尽剑 AOE 进入杀戮模式（默认关，开启后 AOE 不分敌我） |
 | `infinity_armor_night_vision` | `true` | 无尽护甲头盔：夜视 |
 | `boot_speed_base` | `0.1` | 无尽靴子移速（≈ 使女仆基础移速 ×2，与玩家穿靴同倍率） |
 | `boot_speed_swimming_multiplier` | `1.2` | 靴子游泳倍率 |
@@ -96,12 +95,12 @@
 环境要求：JDK 17
 
 ```bash
-# 1. 将两个前置 mod 的 jar 放入 libs/（文件名须与 build.gradle 的 flatDir 坐标一致）：
+# 1. 将两个前置 mod 的 jar 放入 libs/（文件名须与 build.gradle 中的依赖坐标一致）：
 #    - touhoulittlemaid-1.5.3-forge-mc1.20.1.jar
 #    - Re-Avaritia-forge-1.20.1-1.4.0-release.jar
 #    （libs/ 已 gitignore 不提交；GitHub Actions 会自动从上游 Releases 下载）
 
-./gradlew build        # 构建产物在 build/libs/
+./gradlew build        # 构建产物在 build/libs/TML_Avaritia_addon-<版本>-MC1.20.1+forge.jar
 ./gradlew runClient    # 启动开发客户端
 ```
 
