@@ -1,40 +1,41 @@
-### Gradle ###
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/**/build/
+# eclipse
+bin/
+*.launch
+.settings/
+.metadata/
+.classpath
+.project
 
-### IntelliJ IDEA ###
-.idea/
+# idea
+out/
+*.ipr
 *.iws
 *.iml
-*.ipr
-out/
-!**/src/**/out/
-
-.run/
-
-### Eclipse ###
-.apt_generated
-.classpath
-.eclipse/
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/**/bin/
-
-### VS Code ###
+.idea/
 .vscode/
 
-### Mac OS ###
-.DS_Store
+# gradle
+build/
+.gradle/
 
-### Minecraft Modding ###
+# Minecraft run directories
 run/
-!**/src/**/run/
-**/src/generated/**/.cache/
+runs/
+run-data/
+logs/
+
+# local mod jars (not committed; CI downloads them into libs/ before building)
+libs/
 repo/
-!**/src/**/repo/
+
+Dependencies_source_code/
+# project-local gradle home used by headless dev runs
+.gradle-home/
+
+# temporary decompiled reference sources used during porting
+.tmp-src*/
+
+# local test tooling / python caches (not part of the mod)
+rcon_helper.py
+__pycache__/
+*.pyc

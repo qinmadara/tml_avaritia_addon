@@ -5,6 +5,10 @@ plugins {
     id 'idea'
 }
 
+tasks.named('jar') {
+    archiveFileName = "TML_Avaritia_Addon-${mod_version}-MC1.21.1+NeoForge.jar"
+}
+
 tasks.named('wrapper', Wrapper).configure {
     // Define wrapper values here so as to not have to always do so when updating gradlew.properties.
     // Switching this to Wrapper.DistributionType.ALL will download the full gradle sources that comes with
@@ -29,6 +33,17 @@ sourceSets.main.resources {
 
 repositories {
     // Add here additional repositories if required by some of the dependencies below.
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 base {
@@ -137,6 +152,14 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    if (project.hasProperty("useLocalDeps")) {
+        // 本地兜底模式： ./gradlew -PuseLocalDeps compileJava
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+    } else {
+        // Modrinth Maven，直接填写网页上的版本号字符串
+        implementation "maven.modrinth:touhou-little-maid:1.5.3-neoforge+mc1.21.1"
+        implementation "maven.modrinth:re-avaritia:1.21.1-1.4.1-release"
+    }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
