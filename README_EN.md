@@ -7,7 +7,7 @@
 
 | Item | Value |
 |---|---|
-| Current Version | 0.1.4 |
+| Current Version | 0.1.5 |
 | Loader | NeoForge 1.21.1 (21.1.248+) |
 | Java | 21 |
 | License | MIT |
@@ -85,8 +85,6 @@ The config file is located at `config/tml_avaritia_addon-common.toml`. Main opti
 | `boot_speed_base` | `0.1` | Infinity boots speed (≈ 2× the maid's base movement speed, same multiplier as a player wearing the boots) |
 | `boot_speed_swimming_multiplier` | `1.2` | Boots swimming multiplier |
 | `boot_speed_sprinting_multiplier` | `0.2` | Boots sprinting multiplier (TLM maids don't sprint by default, so this stays dormant) |
-
-> `boot_speed_flying/sneaking/backward/strafing_multiplier` are kept only to mirror Re-Avaritia's config; they are currently unused.
 
 ---
 

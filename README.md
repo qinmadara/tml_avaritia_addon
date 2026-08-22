@@ -7,7 +7,7 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | 0.1.4 |
+| 当前版本 | 0.1.5 |
 | 加载器 | NeoForge 1.21.1（21.1.248+） |
 | Java | 21 |
 | 许可 | MIT |
@@ -85,8 +85,6 @@
 | `boot_speed_base` | `0.1` | 无尽靴子移速（≈ 使女仆基础移速 ×2，与玩家穿靴同倍率） |
 | `boot_speed_swimming_multiplier` | `1.2` | 靴子游泳倍率 |
 | `boot_speed_sprinting_multiplier` | `0.2` | 靴子冲刺倍率（TLM 女仆 AI 本身不冲刺，默认不触发） |
-
-> `boot_speed_flying/sneaking/backward/strafing_multiplier` 为与 Re-Avaritia 配置对齐的项，当前未使用。
 
 ---
 

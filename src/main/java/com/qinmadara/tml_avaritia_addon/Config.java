@@ -5,8 +5,15 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-// 配置骨架（后续需求按此模式继续扩展）
-@EventBusSubscriber(modid = tml_avaritia_addon.MODID)
+/**
+ * 本模组配置。
+ *
+ * 注意：ModConfigEvent.Loading / Reloading 由 FML 在 MOD 总线上发出，
+ * 因此 @EventBusSubscriber 必须显式指定 bus = Bus.MOD（1.20.1 移植到 1.21.1 时
+ * 曾丢失该参数而默认注册到 GAME 总线，导致 onLoad 永不触发、配置文件全部不生效）。
+ * 另补充 Reloading 订阅，游戏内修改/重载配置后立即同步静态字段。
+ */
+@EventBusSubscriber(modid = tml_avaritia_addon.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config
 {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -24,8 +31,6 @@ public class Config
             .define("force_kill_mode", false);
 
     // ===== 无尽护甲·女仆被动适配 =====
-    // 对标 Re-Avaritia ModConfig 的护甲相关项（同名同值同范围）；这些项只对女仆生效，
-    // 玩家端仍由 Re-Avaritia 自身的 AbilityHandler 处理。
     // 头盔：夜视开关
     private static final ModConfigSpec.BooleanValue INFINITY_ARMOR_NIGHT_VISION = BUILDER
             .comment("Infinity Open or Off Night Vision (maid only)")
@@ -34,21 +39,9 @@ public class Config
     private static final ModConfigSpec.DoubleValue BOOT_SPEED_BASE = BUILDER
             .comment("Boot speed base (maid only, aligns with Re-Avaritia boot_speed_base; applied as a % boost to MOVEMENT_SPEED: bootSpeedBase=0.1 → +100% → 2x base speed, same ratio as the player's boots)")
             .defineInRange("boot_speed_base", 0.1D, 0.01D, 1.0D);
-    private static final ModConfigSpec.DoubleValue BOOT_SPEED_FLYING_MULTIPLIER = BUILDER
-            .comment("Boot speed flying multiplier (config parity with Re-Avaritia; maid AI-driven, currently unused)")
-            .defineInRange("boot_speed_flying_multiplier", 1.1D, 0.1D, 5.0D);
     private static final ModConfigSpec.DoubleValue BOOT_SPEED_SWIMMING_MULTIPLIER = BUILDER
             .comment("Boot speed swimming multiplier (maid only, applied while the maid is in water)")
             .defineInRange("boot_speed_swimming_multiplier", 1.2D, 0.1D, 5.0D);
-    private static final ModConfigSpec.DoubleValue BOOT_SPEED_SNEAKING_MULTIPLIER = BUILDER
-            .comment("Boot speed sneaking multiplier (config parity with Re-Avaritia; maid can't sneak, currently unused)")
-            .defineInRange("boot_speed_sneaking_multiplier", 0.1D, 0.01D, 1.0D);
-    private static final ModConfigSpec.DoubleValue BOOT_SPEED_BACKWARD_MULTIPLIER = BUILDER
-            .comment("Boot speed backward multiplier (config parity with Re-Avaritia; maid AI-driven, currently unused)")
-            .defineInRange("boot_speed_backward_multiplier", 0.25D, 0.01D, 1.0D);
-    private static final ModConfigSpec.DoubleValue BOOT_SPEED_STRAFING_MULTIPLIER = BUILDER
-            .comment("Boot speed strafing multiplier (config parity with Re-Avaritia; maid AI-driven, currently unused)")
-            .defineInRange("boot_speed_strafing_multiplier", 0.45D, 0.01D, 1.0D);
     private static final ModConfigSpec.DoubleValue BOOT_SPEED_SPRINTING_MULTIPLIER = BUILDER
             .comment("Boot speed sprinting multiplier (maid only, applied while the maid is sprinting; note: TLM maid AI doesn't set sprinting natively, so this is dormant unless sprinting is set by another source)")
             .defineInRange("boot_speed_sprinting_multiplier", 0.2D, 0.01D, 1.0D);
@@ -59,17 +52,24 @@ public class Config
     public static boolean forceKillMode;
     public static boolean infinityArmorNightVision;
     public static double bootSpeedBase;
-    public static double bootSpeedFlyingMultiplier;
     public static double bootSpeedSwimmingMultiplier;
-    public static double bootSpeedSneakingMultiplier;
-    public static double bootSpeedBackwardMultiplier;
-    public static double bootSpeedStrafingMultiplier;
     public static double bootSpeedSprintingMultiplier;
 
     @SubscribeEvent
     public static void onLoad(final ModConfigEvent.Loading event)
     {
-        // 只处理本模组自己的配置，避免其他配置加载/重载事件误触发
+        apply(event);
+    }
+
+    @SubscribeEvent
+    public static void onReload(final ModConfigEvent.Reloading event)
+    {
+        apply(event);
+    }
+
+    /** 把配置值同步到静态字段（Loading 与 Reloading 共用；只处理本模组自己的配置，避免其他配置事件误触发） */
+    private static void apply(final ModConfigEvent event)
+    {
         if (event.getConfig().getSpec() != SPEC) {
             return;
         }
@@ -77,11 +77,7 @@ public class Config
         forceKillMode = FORCE_KILL_MODE.get();
         infinityArmorNightVision = INFINITY_ARMOR_NIGHT_VISION.get();
         bootSpeedBase = BOOT_SPEED_BASE.get();
-        bootSpeedFlyingMultiplier = BOOT_SPEED_FLYING_MULTIPLIER.get();
         bootSpeedSwimmingMultiplier = BOOT_SPEED_SWIMMING_MULTIPLIER.get();
-        bootSpeedSneakingMultiplier = BOOT_SPEED_SNEAKING_MULTIPLIER.get();
-        bootSpeedBackwardMultiplier = BOOT_SPEED_BACKWARD_MULTIPLIER.get();
-        bootSpeedStrafingMultiplier = BOOT_SPEED_STRAFING_MULTIPLIER.get();
         bootSpeedSprintingMultiplier = BOOT_SPEED_SPRINTING_MULTIPLIER.get();
     }
 }
