@@ -7,7 +7,7 @@
 
 | Item | Value |
 |---|---|
-| Current Version | 0.1.4 |
+| Current Version | 0.1.5 |
 | Loader | Forge 1.20.1 (47.1.3+); NeoForge 1.20.1 |
 | Java | 17 |
 | License | MIT |
@@ -86,7 +86,6 @@ The config file is located at `config/tml_avaritia_addon-common.toml`. Main opti
 | `boot_speed_swimming_multiplier` | `1.2` | Boots swimming multiplier |
 | `boot_speed_sprinting_multiplier` | `0.2` | Boots sprinting multiplier (TLM maids don't sprint by default, so this stays dormant) |
 
-> `boot_speed_flying/sneaking/backward/strafing_multiplier` are kept only to mirror Re-Avaritia's config; they are currently unused.
 
 ---
 

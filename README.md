@@ -7,7 +7,7 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | 0.1.4 |
+| 当前版本 | 0.1.5 |
 | 加载器 | Forge 1.20.1（47.1.3+）；NeoForge 1.20.1 |
 | Java | 17 |
 | 许可 | MIT |
@@ -86,7 +86,6 @@
 | `boot_speed_swimming_multiplier` | `1.2` | 靴子游泳倍率 |
 | `boot_speed_sprinting_multiplier` | `0.2` | 靴子冲刺倍率（TLM 女仆 AI 本身不冲刺，默认不触发） |
 
-> `boot_speed_flying/sneaking/backward/strafing_multiplier` 为与 Re-Avaritia 配置对齐的项，当前未使用。
 
 ---
 

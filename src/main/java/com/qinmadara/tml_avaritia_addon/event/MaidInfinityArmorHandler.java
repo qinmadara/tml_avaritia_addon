@@ -12,7 +12,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -26,11 +29,12 @@ import java.util.UUID;
  * 女仆（EntityMaid，LivingEntity）不是 Player，故特效全部不生效；只有基础护甲值/韧性/击退抗性
  * （标准装备属性）和猪灵中立（物品方法，LivingEntity 参数）对女仆天然生效。
  *
- * 本处理器镜像 AbilityHandler，但只对 EntityMaid 生效（服务端权威修改，自动同步客户端）：
+ * 本处理器镜像 Re-Avaritia 的护甲被动，但只对 EntityMaid 生效（服务端权威修改，自动同步客户端）：
  *   头盔：水下呼吸（空气槽 300）+ 夜视（Config.infinityArmorNightVision 开关）
  *   胸甲：清除负面药水效果
  *   护腿：火焰免疫（每 tick clearFire）
- *   靴子：台阶高度 1.0625（脱下恢复 0.6）+ 移动速度（MOVEMENT_SPEED 属性修饰符，bootSpeedBase 等 Config 对标 Re-Avaritia）
+ *   靴子：台阶高度 1.0625（脱下恢复 0.6）+ 移动速度（MOVEMENT_SPEED 属性修饰符）
+ *   全套：免伤（Re-Avaritia 只对 Player 免伤，这里为女仆补齐）
  * 不含（设计时跳过）：胸甲飞行 / 末影人无视 / 跳跃增强 / 饱食度（女仆无此概念或会破坏 AI）。
  */
 @Mod.EventBusSubscriber(modid = tml_avaritia_addon.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -40,6 +44,26 @@ public class MaidInfinityArmorHandler {
     private static final UUID BOOTS_SPEED_MODIFIER_UUID = UUID.fromString("3f0c8a1e-2b4d-4f6a-9c8b-1e2d3f4a5b6c");
     // 玩家基础行走速度：把 bootSpeedBase（绝对值）换算成 MOVEMENT_SPEED 的百分比加成，与玩家穿靴 2× 对齐
     private static final double REFERENCE_WALK_SPEED = 0.1D;
+
+    /**
+     * 全套无尽护甲减伤：
+     * Re-Avaritia 的 InfinityHandler#onGetHurt / onLivingDamage 只对 Player 生效，
+     * 女仆即使穿全套无尽护甲也会吃到无尽弓/弩（INFINITY 伤害源）的伤害。
+     * 这里为女仆补齐同样的全套免伤效果。
+     */
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onMaidHurt(LivingHurtEvent event) {
+        if (event.getEntity() instanceof EntityMaid maid && ToolUtils.isInfinite(maid)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onMaidDamage(LivingDamageEvent event) {
+        if (event.getEntity() instanceof EntityMaid maid && ToolUtils.isInfinite(maid)) {
+            event.setAmount(0.0F);
+        }
+    }
 
     @SubscribeEvent
     public static void updateMaidAbilities(LivingEvent.LivingTickEvent event) {

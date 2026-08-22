@@ -34,21 +34,9 @@ public class Config
     private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_BASE = BUILDER
             .comment("Boot speed base (maid only, aligns with Re-Avaritia boot_speed_base; applied as a % boost to MOVEMENT_SPEED: bootSpeedBase=0.1 → +100% → 2x base speed, same ratio as the player's boots)")
             .defineInRange("boot_speed_base", 0.1D, 0.01D, 1.0D);
-    private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_FLYING_MULTIPLIER = BUILDER
-            .comment("Boot speed flying multiplier (config parity with Re-Avaritia; maid AI-driven, currently unused)")
-            .defineInRange("boot_speed_flying_multiplier", 1.1D, 0.1D, 5.0D);
     private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_SWIMMING_MULTIPLIER = BUILDER
             .comment("Boot speed swimming multiplier (maid only, applied while the maid is in water)")
             .defineInRange("boot_speed_swimming_multiplier", 1.2D, 0.1D, 5.0D);
-    private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_SNEAKING_MULTIPLIER = BUILDER
-            .comment("Boot speed sneaking multiplier (config parity with Re-Avaritia; maid can't sneak, currently unused)")
-            .defineInRange("boot_speed_sneaking_multiplier", 0.1D, 0.01D, 1.0D);
-    private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_BACKWARD_MULTIPLIER = BUILDER
-            .comment("Boot speed backward multiplier (config parity with Re-Avaritia; maid AI-driven, currently unused)")
-            .defineInRange("boot_speed_backward_multiplier", 0.25D, 0.01D, 1.0D);
-    private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_STRAFING_MULTIPLIER = BUILDER
-            .comment("Boot speed strafing multiplier (config parity with Re-Avaritia; maid AI-driven, currently unused)")
-            .defineInRange("boot_speed_strafing_multiplier", 0.45D, 0.01D, 1.0D);
     private static final ForgeConfigSpec.DoubleValue BOOT_SPEED_SPRINTING_MULTIPLIER = BUILDER
             .comment("Boot speed sprinting multiplier (maid only, applied while the maid is sprinting; note: TLM maid AI doesn't set sprinting natively, so this is dormant unless sprinting is set by another source)")
             .defineInRange("boot_speed_sprinting_multiplier", 0.2D, 0.01D, 1.0D);
@@ -59,11 +47,7 @@ public class Config
     public static boolean forceKillMode;
     public static boolean infinityArmorNightVision;
     public static double bootSpeedBase;
-    public static double bootSpeedFlyingMultiplier;
     public static double bootSpeedSwimmingMultiplier;
-    public static double bootSpeedSneakingMultiplier;
-    public static double bootSpeedBackwardMultiplier;
-    public static double bootSpeedStrafingMultiplier;
     public static double bootSpeedSprintingMultiplier;
 
     @SubscribeEvent
@@ -77,11 +61,7 @@ public class Config
         forceKillMode = FORCE_KILL_MODE.get();
         infinityArmorNightVision = INFINITY_ARMOR_NIGHT_VISION.get();
         bootSpeedBase = BOOT_SPEED_BASE.get();
-        bootSpeedFlyingMultiplier = BOOT_SPEED_FLYING_MULTIPLIER.get();
         bootSpeedSwimmingMultiplier = BOOT_SPEED_SWIMMING_MULTIPLIER.get();
-        bootSpeedSneakingMultiplier = BOOT_SPEED_SNEAKING_MULTIPLIER.get();
-        bootSpeedBackwardMultiplier = BOOT_SPEED_BACKWARD_MULTIPLIER.get();
-        bootSpeedStrafingMultiplier = BOOT_SPEED_STRAFING_MULTIPLIER.get();
         bootSpeedSprintingMultiplier = BOOT_SPEED_SPRINTING_MULTIPLIER.get();
     }
 }
